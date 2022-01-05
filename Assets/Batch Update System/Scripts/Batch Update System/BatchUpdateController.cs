@@ -30,31 +30,34 @@ public class BatchUpdateController : MonoBehaviour
 
         while (!updateBatchesSimultaneously)
         {
-            if (!batchUpdaters[currentBatch].isFinished && !currentlyUpdatingABatch)
+            if (!updateBatchesSimultaneously)
             {
-                deltaTime = Time.time - batchUpdaters[currentBatch].lastUpdatedTime;
-                currentlyUpdatingABatch = true;
-                batchUpdaters[currentBatch].UpdateBatch(deltaTime);
-            }
-            else if (batchUpdaters[currentBatch].isFinished)
-            {
-                currentlyUpdatingABatch = false;
-                batchUpdaters[currentBatch].StopBatchUpdate();
-
-                currentBatch++;
-                if (currentBatch > batchUpdaters.Length - 1)
+                if (!batchUpdaters[currentBatch].isFinished && !currentlyUpdatingABatch)
                 {
-                    currentBatch = 0;
+                    deltaTime = Time.time - batchUpdaters[currentBatch].lastUpdatedTime;
+                    currentlyUpdatingABatch = true;
+                    batchUpdaters[currentBatch].UpdateBatch(deltaTime);
                 }
-            }
+                else if (batchUpdaters[currentBatch].isFinished)
+                {
+                    currentlyUpdatingABatch = false;
+                    batchUpdaters[currentBatch].StopBatchUpdate();
 
-            if(secondsBetweenBatchUpdates == 0)
-            {
-                yield return null;
-            }
-            else
-            {
-                yield return new WaitForSecondsRealtime(secondsBetweenBatchUpdates / 2f);
+                    currentBatch++;
+                    if (currentBatch > batchUpdaters.Length - 1)
+                    {
+                        currentBatch = 0;
+                    }
+                }
+
+                if (secondsBetweenBatchUpdates == 0)
+                {
+                    yield return null;
+                }
+                else
+                {
+                    yield return new WaitForSecondsRealtime(secondsBetweenBatchUpdates / 2f);
+                }
             }
         }
 
